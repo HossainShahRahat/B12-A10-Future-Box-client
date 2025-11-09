@@ -5,10 +5,12 @@ const Footer = () => {
   return (
     <footer className="flex flex-wrap justify-around items-start p-10 bg-base-200 text-base-content rounded-t-lg mt-16 gap-8">
       <aside>
-        <span className="text-3xl">🗓️</span>
-        <p className="font-bold text-xl">
-          SocialEvents Ltd.
-          <br />
+        <div className="flex flex-row items-center">
+          <span className="text-3xl">🗓️</span>
+          <p className="font-bold text-xl">SocialEvents</p>
+        </div>
+        <br />
+        <p>
           <span className="font-normal text-base">
             Connecting communities since 2025
           </span>

@@ -1,9 +1,21 @@
 import { Link, NavLink } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider.jsx";
 
 const Navbar = () => {
   const { user, logOut, loading } = useContext(AuthContext);
+
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  const handleToggle = (e) => {
+    const newTheme = e.target.checked ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const handleLogOut = () => {
     logOut()
@@ -77,7 +89,14 @@ const Navbar = () => {
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-1">{navLinks}</ul>
         </div>
-        <div className="navbar-end space-x-2">
+        <div className="navbar-end space-x-3">
+          <input
+            type="checkbox"
+            className="toggle toggle-primary"
+            onChange={handleToggle}
+            checked={theme === "dark"}
+          />
+
           {loading ? (
             <span className="loading loading-spinner"></span>
           ) : user ? (
