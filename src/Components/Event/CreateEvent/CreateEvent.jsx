@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AuthContext } from "../../AuthProvider/AuthProvider.jsx";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 const CreateEvent = () => {
   const { user } = useContext(AuthContext);
@@ -20,6 +21,39 @@ const CreateEvent = () => {
     "Workshop",
     "Other",
   ];
+
+  const postNewEvent = async (newEvent) => {
+    const res = await fetch("/api/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newEvent),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to create event. Server responded poorly.");
+    }
+    return res.json();
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: postNewEvent,
+    onSuccess: (data) => {
+      if (data.insertedId) {
+        toast.success("Event Created Successfully!");
+        navigate("/upcoming-events");
+      } else {
+        toast.error("Event creation failed. Please try again.");
+        setFormError("Could not create the event.");
+      }
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to create event.");
+      setFormError("An error occurred. Please try again.");
+    },
+  });
 
   const handleCreateEvent = (event) => {
     event.preventDefault();
@@ -55,28 +89,9 @@ const CreateEvent = () => {
       creatorEmail: userEmail,
     };
 
-    console.log(newEvent);
     setFormError("");
 
-    fetch("/api/events", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newEvent),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.insertedId) {
-          toast.success("Event Created Successfully!");
-          navigate("/upcoming-events");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to create event.");
-        setFormError("An error occurred. Please try again.");
-      });
+    mutate(newEvent);
   };
 
   return (
@@ -174,8 +189,16 @@ const CreateEvent = () => {
           {formError && <p className="text-red-500 text-sm">{formError}</p>}
 
           <div className="form-control mt-6">
-            <button type="submit" className="btn btn-primary btn-lg w-full">
-              Create Event
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg w-full"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "Create Event"
+              )}
             </button>
           </div>
         </form>

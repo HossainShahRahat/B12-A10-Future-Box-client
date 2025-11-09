@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useMutation } from "@tanstack/react-query";
 
 const ManageEvents = () => {
   const { user } = useContext(AuthContext);
@@ -12,6 +13,7 @@ const ManageEvents = () => {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
+  const [modalError, setModalError] = useState("");
 
   const eventTypesList = [
     "Cleanup",
@@ -42,66 +44,102 @@ const ManageEvents = () => {
   useEffect(() => {
     fetchMyEvents();
   }, [user]);
+  
+  const updateEventOnServer = async ({ eventId, updatedEvent }) => {
+     const res = await fetch(`/api/event/${eventId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedEvent),
+     });
+     if (!res.ok) {
+        throw new Error('Update failed');
+     }
+     return res.json();
+  };
+
+  const { mutate: updateEventMutation, isPending: isUpdating } = useMutation({
+    mutationFn: updateEventOnServer,
+    onSuccess: (data) => {
+        if (data.modifiedCount > 0) {
+            toast.success("Event Updated Successfully!");
+            fetchMyEvents();
+            document.getElementById("update_modal").close();
+        } else {
+            toast.error("No changes were made.");
+        }
+    },
+    onError: (err) => {
+        console.error(err);
+        toast.error("Failed to update event.");
+    }
+  });
+  
+  const deleteEventFromServer = async (id) => {
+    const res = await fetch(`/api/event/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) {
+        throw new Error('Delete failed');
+    }
+    return res.json();
+  };
+  
+  const { mutate: deleteEventMutation } = useMutation({
+    mutationFn: deleteEventFromServer,
+    onSuccess: (data) => {
+        if (data.deletedCount > 0) {
+            toast.success("Event Deleted Successfully!");
+            fetchMyEvents();
+        }
+    },
+    onError: (err) => {
+        console.error(err);
+        toast.error("Failed to delete event.");
+    }
+  });
+
 
   const openUpdateModal = (event) => {
     setSelectedEvent(event);
     setStartDate(new Date(event.eventDate));
+    setModalError(""); 
     document.getElementById("update_modal").showModal();
   };
 
   const handleUpdateEvent = (event) => {
     event.preventDefault();
+    setModalError(""); 
     const form = event.target;
 
-    const updatedEvent = {
-      title: form.title.value,
-      description: form.description.value,
-      eventType: form.eventType.value,
-      thumbnail: form.thumbnail.value,
-      location: form.location.value,
-      eventDate: startDate,
-    };
+    const title = form.title.value;
+    const description = form.description.value;
+    const eventType = form.eventType.value;
+    const thumbnail = form.thumbnail.value;
+    const location = form.location.value;
+    const eventDate = startDate;
 
-    fetch(`/api/event/${selectedEvent._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedEvent),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount > 0) {
-          toast.success("Event Updated Successfully!");
-          fetchMyEvents();
-          document.getElementById("update_modal").close();
-        } else {
-          toast.error("No changes were made.");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to update event.");
-      });
+    if (!title || !description || !eventType || !thumbnail || !location || !eventDate) {
+        setModalError("Please fill out all fields.");
+        return;
+    }
+
+    const updatedEvent = {
+      title,
+      description,
+      eventType,
+      thumbnail,
+      location,
+      eventDate,
+    };
+    
+    updateEventMutation({ eventId: selectedEvent._id, updatedEvent });
   };
 
   const handleDeleteEvent = (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) {
       return;
     }
-
-    fetch(`/api/event/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.deletedCount > 0) {
-          toast.success("Event Deleted Successfully!");
-          fetchMyEvents();
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to delete event.");
-      });
+    deleteEventMutation(id);
   };
 
   if (loading) {
@@ -254,12 +292,19 @@ const ManageEvents = () => {
                 <textarea
                   name="description"
                   defaultValue={selectedEvent.description}
-                  className="textarea textarea-bordered h-32"
+                  className="textarea textarea-bordered h-32 w-full"
                 ></textarea>
               </div>
+              
+              {modalError && <p className="text-red-500 text-sm">{modalError}</p>}
+              
               <div className="modal-action mt-6">
-                <button type="submit" className="btn btn-primary">
-                  Save Changes
+                <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={isUpdating}
+                >
+                  {isUpdating ? <span className="loading loading-spinner"></span> : 'Save Changes'}
                 </button>
                 <form method="dialog">
                   <button className="btn btn-ghost">Cancel</button>
