@@ -3,13 +3,12 @@ import { Link } from "react-router-dom";
 
 const Homepage = () => {
   return (
-    <div className="container mx-auto px-4">
-      {/* Banner Section */}
+    <div className="container mx-auto px-4 py-12">
       <div
         className="hero min-h-[500px] rounded-lg overflow-hidden"
         style={{
           backgroundImage:
-            "url(https://placehold.co/1200x500/a3e635/f0fdf4?text=Join+Us+for+Community+Cleanup!)",
+            "url(https://framerusercontent.com/images/oGOG6sB7rieQmGFspw59xdviGfE.jpg?width=1600&height=800)",
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
@@ -29,7 +28,6 @@ const Homepage = () => {
         </div>
       </div>
 
-      {/* Feature Section */}
       <section className="my-20">
         <h2 className="text-4xl font-bold text-center mb-10">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -75,36 +73,35 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Gallery Section */}
       <section className="my-20">
         <h2 className="text-4xl font-bold text-center mb-10">
           Our Community in Action
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="rounded-lg overflow-hidden h-64">
+          <div className="rounded-lg overflow-hidden h-85">
             <img
-              src="https://placehold.co/600x400/86efac/14532d?text=Tree+Plantation+Drive"
+              src="https://www.aiub.edu/Files/Uploads/webp/treeplantationdrive20.webp"
               alt="Tree Plantation"
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="rounded-lg overflow-hidden h-64 col-span-1 md:col-span-2">
+          <div className="rounded-lg overflow-hidden h-85 col-span-1 md:col-span-2">
             <img
-              src="https://placehold.co/800x400/fca5a5/7f1d1d?text=Donation+Camp"
+              src="https://media.licdn.com/dms/image/v2/D5622AQGDct9xpuxjXw/feedshare-shrink_800/feedshare-shrink_800/0/1721363190009?e=2147483647&v=beta&t=yZGA-lh2yr0a931SpNfHNtpQhyEKshgJ5vBWhpxBTrw"
               alt="Donation Camp"
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="rounded-lg overflow-hidden h-64 col-span-1 md:col-span-2">
+          <div className="rounded-lg overflow-hidden h-85 col-span-1 md:col-span-2">
             <img
-              src="https://placehold.co/800x400/93c5fd/1e3a8a?text=Road+Cleaning"
+              src="https://img.freepik.com/free-vector/volunteers-trash-out-composition-with-cityscape-illustration-group-flat-human-characters-with-cleaning-utensils_1284-61784.jpg?semt=ais_hybrid&w=740&q=80"
               alt="Road Cleaning"
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="rounded-lg overflow-hidden h-64">
+          <div className="rounded-lg overflow-hidden h-85">
             <img
-              src="https://placehold.co/600x400/fde047/713f12?text=Volunteers"
+              src="https://www.shutterstock.com/image-photo/happy-young-asian-students-diverse-600nw-2389117247.jpg"
               alt="Volunteers"
               className="w-full h-full object-cover"
             />
@@ -112,7 +109,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Newsletter Section */}
       <section className="my-20 p-10 bg-base-200 rounded-lg">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="md:w-1/2 mb-6 md:mb-0">
