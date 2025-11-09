@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
@@ -49,7 +50,13 @@ const UpcomingEvents = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 my-12">
+    <motion.div
+      className="container mx-auto px-4 my-12"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold">Upcoming Community Events</h1>
         <p className="text-lg mt-2 text-gray-600">
@@ -135,7 +142,7 @@ const UpcomingEvents = () => {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

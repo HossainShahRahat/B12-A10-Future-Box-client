@@ -14,7 +14,11 @@ const JoinedEvents = () => {
       fetch(`/api/joined-events?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => {
-          setJoinedEvents(data);
+          const sortedData = data.sort(
+            (a, b) => new Date(a.eventDate) - new Date(b.eventDate)
+          );
+
+          setJoinedEvents(sortedData);
           setLoading(false);
         })
         .catch((err) => {
@@ -55,6 +59,7 @@ const JoinedEvents = () => {
               <div className="card-body">
                 <h2 className="card-title">{event.eventTitle}</h2>
                 <p className="text-gray-600">{event.location}</p>
+
                 <div className="flex justify-between items-center my-2">
                   <span className="font-semibold text-gray-700">
                     {new Date(event.eventDate).toLocaleDateString()}
