@@ -91,7 +91,6 @@ const Navbar = () => {
                 <div className="w-10 rounded-full">
                   <img alt="User Profile" src={user?.photoURL} />
                 </div>
-                DE
               </div>
               <ul
                 tabIndex={0}

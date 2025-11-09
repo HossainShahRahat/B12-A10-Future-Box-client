@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../../AuthProvider/AuthProvider.jsx";
+import { AuthContext } from "../AuthProvider/AuthProvider";
 import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
