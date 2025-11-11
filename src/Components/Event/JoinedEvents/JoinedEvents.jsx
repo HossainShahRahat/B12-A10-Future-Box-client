@@ -9,24 +9,40 @@ const JoinedEvents = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    if (user?.email) {
-      fetch(`/api/joined-events?email=${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
+    const fetchJoinedEvents = async () => {
+      setLoading(true);
+      if (user?.email) {
+        try {
+          const token = await user.getIdToken();
+          const res = await fetch(`/api/joined-events?email=${user.email}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to fetch joined events.");
+          }
+
+          const data = await res.json();
+
           const sortedData = data.sort(
             (a, b) => new Date(a.eventDate) - new Date(b.eventDate)
           );
 
           setJoinedEvents(sortedData);
-          setLoading(false);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error(err);
-          setLoading(false);
           toast.error("Could not fetch your joined events.");
-        });
-    }
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    fetchJoinedEvents();
   }, [user]);
 
   if (loading) {

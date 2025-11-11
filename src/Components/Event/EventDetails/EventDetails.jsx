@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider.jsx";
 import toast from "react-hot-toast";
@@ -9,7 +9,9 @@ const EventDetails = () => {
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+
   const [isJoining, setIsJoining] = useState(false);
+  const [hasJoined, setHasJoined] = useState(false);
 
   const {
     _id,
@@ -22,7 +24,34 @@ const EventDetails = () => {
     creatorEmail,
   } = event;
 
-  const handleJoinEvent = () => {
+  useEffect(() => {
+    const checkJoinedStatus = async () => {
+      if (user && user.email) {
+        try {
+          const token = await user.getIdToken();
+          const res = await fetch(`/api/joined-events?email=${user.email}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) throw new Error("Could not fetch joined status");
+
+          const joinedEvents = await res.json();
+
+          const alreadyJoined = joinedEvents.some(
+            (joinedEvent) => joinedEvent.eventId === _id
+          );
+          if (alreadyJoined) {
+            setHasJoined(true);
+          }
+        } catch (err) {
+          console.error("Failed to check joined status", err);
+        }
+      }
+    };
+
+    checkJoinedStatus();
+  }, [user, _id]);
+
+  const handleJoinEvent = async () => {
     if (!user) {
       toast.error("You must be logged in to join an event.");
       navigate("/login", { state: { from: location } });
@@ -30,6 +59,7 @@ const EventDetails = () => {
     }
 
     setIsJoining(true);
+    const token = await user.getIdToken();
 
     const joinInfo = {
       eventId: _id,
@@ -43,6 +73,7 @@ const EventDetails = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(joinInfo),
     })
@@ -50,6 +81,7 @@ const EventDetails = () => {
       .then((data) => {
         if (data.insertedId) {
           toast.success("Successfully joined the event!");
+          setHasJoined(true);
         } else if (data.message) {
           toast.error(data.message);
         }
@@ -61,6 +93,8 @@ const EventDetails = () => {
         setIsJoining(false);
       });
   };
+
+  const isCreator = user?.email === creatorEmail;
 
   return (
     <div className="container mx-auto px-4 my-12">
@@ -103,16 +137,14 @@ const EventDetails = () => {
                 <button
                   onClick={handleJoinEvent}
                   className="btn btn-primary w-full btn-lg"
-                  disabled={
-                    isJoining || loading || user?.email === creatorEmail
-                  }
+                  disabled={isJoining || loading || isCreator || hasJoined}
                 >
                   {isJoining && (
                     <span className="loading loading-spinner"></span>
                   )}
-                  {user?.email === creatorEmail
-                    ? "This is Your Event"
-                    : "Join Event"}
+                  {!isJoining && isCreator && "This is Your Event"}
+                  {!isJoining && !isCreator && hasJoined && "Already Joined"}
+                  {!isJoining && !isCreator && !hasJoined && "Join Event"}
                 </button>
               </div>
             </div>

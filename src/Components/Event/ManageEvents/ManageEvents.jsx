@@ -24,91 +24,107 @@ const ManageEvents = () => {
     "Other",
   ];
 
-  const fetchMyEvents = () => {
+  const fetchMyEvents = async () => {
     setLoading(true);
     if (user?.email) {
-      fetch(`/api/my-events?email=${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setMyEvents(data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setLoading(false);
-          toast.error("Could not fetch events.");
+      try {
+        const token = await user.getIdToken();
+        const res = await fetch(`/api/my-events?email=${user.email}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+        if (!res.ok) {
+          throw new Error("Could not fetch events.");
+        }
+        const data = await res.json();
+        setMyEvents(data);
+      } catch (err) {
+        console.error(err);
+        toast.error("Could not fetch events.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchMyEvents();
   }, [user]);
-  
+
   const updateEventOnServer = async ({ eventId, updatedEvent }) => {
-     const res = await fetch(`/api/event/${eventId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedEvent),
-     });
-     if (!res.ok) {
-        throw new Error('Update failed');
-     }
-     return res.json();
+    const token = await user.getIdToken();
+    const res = await fetch(`/api/event/${eventId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedEvent),
+    });
+    if (!res.ok) {
+      throw new Error("Update failed");
+    }
+    return res.json();
   };
 
   const { mutate: updateEventMutation, isPending: isUpdating } = useMutation({
     mutationFn: updateEventOnServer,
     onSuccess: (data) => {
-        if (data.modifiedCount > 0) {
-            toast.success("Event Updated Successfully!");
-            fetchMyEvents();
-            document.getElementById("update_modal").close();
-        } else {
-            toast.error("No changes were made.");
-        }
+      if (data.modifiedCount > 0) {
+        toast.success("Event Updated Successfully!");
+        fetchMyEvents();
+        document.getElementById("update_modal").close();
+      } else {
+        toast.error("No changes were made.");
+      }
     },
     onError: (err) => {
-        console.error(err);
-        toast.error("Failed to update event.");
-    }
+      console.error(err);
+      toast.error("Failed to update event.");
+    },
   });
-  
+
   const deleteEventFromServer = async (id) => {
+    const token = await user.getIdToken();
     const res = await fetch(`/api/event/${id}`, {
-        method: "DELETE",
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!res.ok) {
-        throw new Error('Delete failed');
+      throw new Error("Delete failed");
     }
     return res.json();
   };
-  
+
   const { mutate: deleteEventMutation } = useMutation({
     mutationFn: deleteEventFromServer,
     onSuccess: (data) => {
-        if (data.deletedCount > 0) {
-            toast.success("Event Deleted Successfully!");
-            fetchMyEvents();
-        }
+      if (data.deletedCount > 0) {
+        toast.success("Event Deleted Successfully!");
+        fetchMyEvents();
+      }
     },
     onError: (err) => {
-        console.error(err);
-        toast.error("Failed to delete event.");
-    }
+      console.error(err);
+      toast.error("Failed to delete event.");
+    },
   });
-
 
   const openUpdateModal = (event) => {
     setSelectedEvent(event);
     setStartDate(new Date(event.eventDate));
-    setModalError(""); 
+    setModalError("");
     document.getElementById("update_modal").showModal();
   };
 
   const handleUpdateEvent = (event) => {
     event.preventDefault();
-    setModalError(""); 
+    setModalError("");
     const form = event.target;
 
     const title = form.title.value;
@@ -118,9 +134,16 @@ const ManageEvents = () => {
     const location = form.location.value;
     const eventDate = startDate;
 
-    if (!title || !description || !eventType || !thumbnail || !location || !eventDate) {
-        setModalError("Please fill out all fields.");
-        return;
+    if (
+      !title ||
+      !description ||
+      !eventType ||
+      !thumbnail ||
+      !location ||
+      !eventDate
+    ) {
+      setModalError("Please fill out all fields.");
+      return;
     }
 
     const updatedEvent = {
@@ -131,7 +154,7 @@ const ManageEvents = () => {
       location,
       eventDate,
     };
-    
+
     updateEventMutation({ eventId: selectedEvent._id, updatedEvent });
   };
 
@@ -295,16 +318,22 @@ const ManageEvents = () => {
                   className="textarea textarea-bordered h-32 w-full"
                 ></textarea>
               </div>
-              
-              {modalError && <p className="text-red-500 text-sm">{modalError}</p>}
-              
+
+              {modalError && (
+                <p className="text-red-500 text-sm">{modalError}</p>
+              )}
+
               <div className="modal-action mt-6">
-                <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                    disabled={isUpdating}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={isUpdating}
                 >
-                  {isUpdating ? <span className="loading loading-spinner"></span> : 'Save Changes'}
+                  {isUpdating ? (
+                    <span className="loading loading-spinner"></span>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </button>
                 <form method="dialog">
                   <button className="btn btn-ghost">Cancel</button>
