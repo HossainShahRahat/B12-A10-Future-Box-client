@@ -23,16 +23,26 @@ const CreateEvent = () => {
   ];
 
   const postNewEvent = async (newEvent) => {
+    if (!user) {
+      throw new Error("User not logged in");
+    }
+
+    const token = await user.getIdToken();
+
     const res = await fetch("/api/events", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(newEvent),
     });
 
     if (!res.ok) {
-      throw new Error("Failed to create event. Server responded poorly.");
+      const errorData = await res.json();
+      throw new Error(
+        errorData.message || "Failed to create event. Server responded poorly."
+      );
     }
     return res.json();
   };
