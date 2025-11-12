@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import { motion } from "framer-motion";
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
