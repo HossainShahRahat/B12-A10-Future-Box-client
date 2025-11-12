@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: "https://b12-a10-future-box-server-eta.vercel.app",
         changeOrigin: true,
       },
     },
