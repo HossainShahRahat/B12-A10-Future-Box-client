@@ -36,7 +36,8 @@ export const router = createBrowserRouter([
       {
         path: "/event/:id",
         element: <EventDetails />,
-        loader: ({ params }) => fetch(`/api/event/${params.id}`),
+        loader: ({ params }) =>
+          fetch(`${import.meta.env.VITE_API_URL}/api/event/${params.id}`),
       },
       {
         path: "/create-event",

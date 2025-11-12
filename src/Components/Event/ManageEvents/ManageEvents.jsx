@@ -29,11 +29,14 @@ const ManageEvents = () => {
     if (user?.email) {
       try {
         const token = await user.getIdToken();
-        const res = await fetch(`/api/my-events?email=${user.email}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/my-events?email=${user.email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!res.ok) {
           throw new Error("Could not fetch events.");
         }
@@ -56,14 +59,17 @@ const ManageEvents = () => {
 
   const updateEventOnServer = async ({ eventId, updatedEvent }) => {
     const token = await user.getIdToken();
-    const res = await fetch(`/api/event/${eventId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedEvent),
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/event/${eventId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedEvent),
+      }
+    );
     if (!res.ok) {
       throw new Error("Update failed");
     }
@@ -89,7 +95,7 @@ const ManageEvents = () => {
 
   const deleteEventFromServer = async (id) => {
     const token = await user.getIdToken();
-    const res = await fetch(`/api/event/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/event/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -28,7 +28,9 @@ const UpcomingEvents = () => {
       params.append("type", eventType);
     }
 
-    fetch(`/api/events/upcoming?${params.toString()}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/events/upcoming?${params.toString()}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setEvents(data);

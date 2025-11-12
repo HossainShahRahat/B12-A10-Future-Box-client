@@ -14,11 +14,16 @@ const JoinedEvents = () => {
       if (user?.email) {
         try {
           const token = await user.getIdToken();
-          const res = await fetch(`/api/joined-events?email=${user.email}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/joined-events?email=${
+              user.email
+            }`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
           if (!res.ok) {
             throw new Error("Failed to fetch joined events.");

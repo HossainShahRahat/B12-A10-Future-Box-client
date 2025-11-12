@@ -29,7 +29,7 @@ const CreateEvent = () => {
 
     const token = await user.getIdToken();
 
-    const res = await fetch("/api/events", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
