@@ -1,16 +1,15 @@
-# React + Vite
+# SocialEvents - Community Event Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A dynamic, single-page web application built with React, designed to connect communities by allowing users to create, discover, and join local social service events.
 
-Currently, two official plugins are available:
+**Live Site URL:** `https://b12-a10-future-box-client.netlify.app`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* [cite_start]**Discover Events:** Browse a fully searchable and filterable list of upcoming community events like cleanups, donation drives, and tree plantations[cite: 66, 109].
+* [cite_start]**Event Management:** Logged-in users can create their own events via a simple form, and then update or delete any events they have created[cite: 60, 81].
+* [cite_start]**Join Events:** Users can view event details and join any upcoming event with a single click[cite: 73]. [cite_start]The system tracks all joined events in a separate, date-sorted dashboard for the user[cite: 78, 79].
+* [cite_start]**Secure Authentication:** The site features a complete authentication system using Firebase, including email/password login, user registration, and Google sign-in[cite: 36, 39, 41]. [cite_start]All private routes and API calls are protected using JWT verification[cite: 121].
+* [cite_start]**Modern UI/UX:** Built with Tailwind CSS and DaisyUI, the site is fully responsive, features smooth page transitions with Framer Motion, and includes a light/dark theme toggle[cite: 98, 112, 114].
