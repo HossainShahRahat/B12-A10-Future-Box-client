@@ -30,7 +30,7 @@ const ManageEvents = () => {
       try {
         const token = await user.getIdToken();
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/my-events?email=${user.email}`,
+          `https://b12-a10-future-box-server-eta.vercel.app/api/my-events?email=${user.email}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ const ManageEvents = () => {
   const updateEventOnServer = async ({ eventId, updatedEvent }) => {
     const token = await user.getIdToken();
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/event/${eventId}`,
+      `https://b12-a10-future-box-server-eta.vercel.app/api/event/${eventId}`,
       {
         method: "PUT",
         headers: {
@@ -95,12 +95,15 @@ const ManageEvents = () => {
 
   const deleteEventFromServer = async (id) => {
     const token = await user.getIdToken();
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/event/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `https://b12-a10-future-box-server-eta.vercel.app/api/event/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (!res.ok) {
       throw new Error("Delete failed");
     }

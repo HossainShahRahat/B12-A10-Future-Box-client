@@ -30,9 +30,7 @@ const EventDetails = () => {
         try {
           const token = await user.getIdToken();
           const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/joined-events?email=${
-              user.email
-            }`,
+            `https://b12-a10-future-box-server-eta.vercel.app/api/joined-events?email=${user.email}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -74,14 +72,17 @@ const EventDetails = () => {
       location: eventLocation,
     };
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/joined-events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(joinInfo),
-    })
+    fetch(
+      `https://b12-a10-future-box-server-eta.vercel.app/api/joined-events`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(joinInfo),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {

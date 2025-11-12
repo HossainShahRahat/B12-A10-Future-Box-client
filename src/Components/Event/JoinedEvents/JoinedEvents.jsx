@@ -15,9 +15,7 @@ const JoinedEvents = () => {
         try {
           const token = await user.getIdToken();
           const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/joined-events?email=${
-              user.email
-            }`,
+            `https://b12-a10-future-box-server-eta.vercel.app/api/joined-events?email=${user.email}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

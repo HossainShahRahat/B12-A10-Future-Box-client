@@ -37,7 +37,9 @@ export const router = createBrowserRouter([
         path: "/event/:id",
         element: <EventDetails />,
         loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_API_URL}/api/event/${params.id}`),
+          fetch(
+            `https://b12-a10-future-box-server-eta.vercel.app/api/event/${params.id}`
+          ),
       },
       {
         path: "/create-event",

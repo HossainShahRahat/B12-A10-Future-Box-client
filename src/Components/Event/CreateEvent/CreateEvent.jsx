@@ -29,14 +29,17 @@ const CreateEvent = () => {
 
     const token = await user.getIdToken();
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(newEvent),
-    });
+    const res = await fetch(
+      `https://b12-a10-future-box-server-eta.vercel.app/api/events`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newEvent),
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();

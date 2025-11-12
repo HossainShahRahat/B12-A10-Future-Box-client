@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
@@ -28,7 +29,7 @@ const UpcomingEvents = () => {
     }
 
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/events/upcoming?${params.toString()}`
+      `https://b12-a10-future-box-server-eta.vercel.app/api/events/upcoming?${params.toString()}`
     )
       .then((res) => res.json())
       .then((data) => {
